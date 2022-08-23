@@ -62,7 +62,6 @@ class TestDateSeriesGenerator(unittest.TestCase):
         relative_date_range = 0
         pd.testing.assert_series_equal(dataden.generate_date_series_from_series(test_series, relative_date_range), test_series)
 
-
     def test_generate_date_series_from_series_after_original(self):
         seed(17)
         input_test_series = pd.Series(
@@ -123,3 +122,45 @@ class TestDateSeriesGenerator(unittest.TestCase):
             index=[0,1]
         )
         pd.testing.assert_series_equal(dataden.generate_date_series_from_date(test_date, relative_date_range, series_length), output_test_series)
+
+class TestDataNullification(unittest.TestCase):
+
+    def test_nullify_rows(self):
+        test_input_df = pd.DataFrame(data={
+            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
+            'date_col2': [datetime(2022, 1, 1), datetime(2022, 1, 1)]
+            }
+        )
+        col_null_fraction = {
+            'date_col1': .5,
+            'date_col2': .5
+        }
+        cols_matching_nullity = {}
+        test_output_df = pd.DataFrame(data={
+            'date_col1': [None, datetime(2022, 1, 1)],
+            'date_col2': [None, datetime(2022, 1, 1)]
+            }
+        )
+        pd.testing.assert_frame_equal(dataden.nullify_rows(test_input_df, col_null_fraction, cols_matching_nullity, seed=17), test_output_df)
+
+    def test_nullify_rows_with_col_matching(self):
+        test_input_df = pd.DataFrame(data={
+            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
+            'date_col2': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
+            'date_col3': [datetime(2022, 1, 1), datetime(2022, 1, 1)]
+            }
+        )
+        col_null_fraction = {
+            'date_col1': 0,
+            'date_col2': .5
+        }
+        cols_matching_nullity = {
+            'date_col2': 'date_col3'
+        }
+        test_output_df = pd.DataFrame(data={
+            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
+            'date_col2': [None, datetime(2022, 1, 1)],
+            'date_col3': [None, datetime(2022, 1, 1)]
+            }
+        )
+        pd.testing.assert_frame_equal(dataden.nullify_rows(test_input_df, col_null_fraction, cols_matching_nullity, seed=17), test_output_df)
