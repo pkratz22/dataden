@@ -33,3 +33,9 @@ def generate_date_series_from_series(original_series: pd.Series, relative_date_r
     return new_series
 
 
+def generate_date_series_from_date(baseline_date: datetime, relative_date_range: int, series_length: int):
+    """
+    This will generate a series of a specified length relative to a date.
+    """
+    date_list = pd.Series([baseline_date] * series_length)
+    return generate_date_series_from_series(date_list, relative_date_range)
