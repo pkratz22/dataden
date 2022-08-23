@@ -1,17 +1,35 @@
-from random import randrange
-from datetime import timedelta
+from random import randrange, seed
+from datetime import datetime, timedelta
+
+import numpy as np
+import pandas as pd
 
 
-def generate_date(start, **kwargs):
+def generate_date(start: datetime, **kwargs):
     """
     This function will return a random date between two dates.
     """
-    end = kwargs.get('end', None)
-    if end is None:
+    diff = kwargs.get('diff', None)
+    if diff is None:
         return start
-    try:
-        delta = (end - start).days
-    except ValueError():
-        raise ValueError()
-    random_number_days = randrange(delta)
-    return start + timedelta(days=random_number_days)
+    elif diff < 0:
+        random_number_of_days = randrange(diff, 0)
+    elif diff > 0:
+        random_number_of_days = randrange(0, diff)
+    else:
+        return start  
+    return start + timedelta(days=random_number_of_days)
+
+
+def generate_date_series_from_series(original_series: pd.Series, relative_date_range: int):
+    """
+    This function will generate a Series of random dates, relative 
+    to another series of dates.
+    """
+    if relative_date_range == 0:
+        new_series = original_series.apply(generate_date)
+    else:
+        new_series = original_series.apply(generate_date, diff=relative_date_range)
+    return new_series
+
+
