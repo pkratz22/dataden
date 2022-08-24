@@ -5,6 +5,12 @@ import numpy as np
 import pandas as pd
 
 
+class ColNullPercentageDecreasingError(Exception):
+    def __init__(self):
+        message = "Col Null Percentage decreases between consecutive column. Columns that have a decrease in null percentage will be treated as the previous column's null percentage."
+        super().__init__(message)
+
+
 def generate_date(start: datetime, **kwargs):
     """
     This function will return a random date between two dates.
@@ -52,6 +58,9 @@ def nullify_rows_date_cols(data_list: list, col_null_fraction: list, **kwargs):
     dates in a sequential process.
     """
     seed = kwargs.get('seed', None)
+
+    if not all(i < j for i, j in zip(col_null_fraction, col_null_fraction[1:])):
+        raise ColNullPercentageDecreasingError
 
     col_null_percentage_increases = [j-i for i, j in zip(col_null_fraction[:-1], col_null_fraction[1:])]
     col_null_percentage_increases.insert(0, col_null_fraction[0])
