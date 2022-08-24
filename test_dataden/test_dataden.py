@@ -80,14 +80,13 @@ class TestDateSeriesGenerator(unittest.TestCase):
 class TestDataNullification(unittest.TestCase):
 
     def test_nullify_rows_date_cols(self):
-        seed(817)
         input_dates = [
             [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)],
             [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
         ]
-        col_null_fraction = [.5, .5]
+        col_null_fraction = [.5, .5, .5]
         output_dates = [
             [pd.NaT, pd.NaT, pd.NaT],
             [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
         ]
-        self.assertEqual(date_functions.nullify_rows_date_cols(input_dates, col_null_fraction, seed=817), output_dates)
+        self.assertEqual(date_functions.nullify_rows_date_cols(input_dates, col_null_fraction, seed=8), output_dates)

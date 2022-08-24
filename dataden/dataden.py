@@ -2,7 +2,7 @@ import csv
 from datetime import datetime
 from itertools import chain
 
-import date_functions
+from . import date_functions
 
 def create_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list):
     col_dict = {}

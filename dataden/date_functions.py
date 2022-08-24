@@ -57,19 +57,21 @@ def nullify_rows_date_cols(data_list: list, col_null_fraction: list, **kwargs):
     This is because the goal of this is to create mock data of
     dates in a sequential process.
     """
-    seed = kwargs.get('seed', None)
+    seed_number = kwargs.get('seed', None)
+    if seed_number is not None:
+        seed(seed_number)
 
-    if not all(i < j for i, j in zip(col_null_fraction, col_null_fraction[1:])):
+    if not all(i <= j for i, j in zip(col_null_fraction, col_null_fraction[1:])):
         raise ColNullPercentageDecreasingError
 
     col_null_percentage_increases = [j-i for i, j in zip(col_null_fraction[:-1], col_null_fraction[1:])]
     col_null_percentage_increases.insert(0, col_null_fraction[0])
 
-    for i in range(len(data_list)):
-        for j in range(len(data_list[0])):
-            if j > 0 and pd.isnull(data_list[i][j-1]):
-                data_list[i][j] = pd.NaT
+    for col in range(len(data_list[0])):
+        for row in range(len(data_list)):
+            if col > 0 and pd.isnull(data_list[row][col-1]):
+                data_list[row][col] = pd.NaT
             else:
-                if random() < col_null_percentage_increases[j]:
-                    data_list[i][j] = pd.NaT
+                if random() < col_null_percentage_increases[col]:
+                    data_list[row][col] = pd.NaT
     return data_list
