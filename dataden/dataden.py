@@ -1,10 +1,14 @@
 import csv
 from datetime import datetime
-from itertools import chain
+from random import seed
 
 from . import date_functions
 
-def create_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list):
+def create_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
+    seed_number = kwargs.get('seed', None)
+    if seed_number is not None:
+        seed(seed_number)
+    
     col_dict = {}
     k = 0
     while k < len(col_differences):
@@ -17,7 +21,6 @@ def create_output(starting_date: datetime, series_length: int, col_differences: 
     master_data = list(list(a) for a in zip(*col_dict.values()))
 
     master_data = date_functions.nullify_rows_date_cols(master_data, col_null_fraction)
-
     return master_data
 
 
