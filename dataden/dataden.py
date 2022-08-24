@@ -21,15 +21,15 @@ def generate_date(start: datetime, **kwargs):
     return start + timedelta(days=random_number_of_days)
 
 
-def generate_date_series_from_series(original_series: pd.Series, relative_date_range: int):
+def generate_date_series_from_series(original_series: list, relative_date_range: int):
     """
     This function will generate a Series of random dates, relative 
     to another series of dates.
     """
     if relative_date_range == 0:
-        new_series = original_series.apply(generate_date)
+        new_series = [generate_date(element) for element in original_series]
     else:
-        new_series = original_series.apply(generate_date, diff=relative_date_range)
+        new_series = [generate_date(element, diff=relative_date_range) for element in original_series]
     return new_series
 
 
@@ -37,7 +37,7 @@ def generate_date_series_from_date(baseline_date: datetime, relative_date_range:
     """
     This will generate a series of a specified length relative to a date.
     """
-    date_list = pd.Series([baseline_date] * series_length)
+    date_list = [baseline_date] * series_length
     return generate_date_series_from_series(date_list, relative_date_range)
 
 def nullify_rows(df: pd.DataFrame, col_null_fraction: dict, cols_matching_nullity: dict, **kwargs):
@@ -58,3 +58,4 @@ def nullify_rows(df: pd.DataFrame, col_null_fraction: dict, cols_matching_nullit
     for key, value in cols_matching_nullity.items():
         df.loc[df[key].isnull(), value] = pd.NaT
     return df
+
