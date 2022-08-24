@@ -33,25 +33,25 @@ class TestDateSeriesGenerator(unittest.TestCase):
 
     def test_generate_date_series_from_series_before_original(self):
         seed(17)
-        input = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
         relative_date_range = -5
-        output = [datetime(2021, 12, 31), datetime(2022, 1, 8)]
+        output_dates = [datetime(2021, 12, 31), datetime(2022, 1, 8)]
         
-        self.assertEqual(dataden.generate_date_series_from_series(input, relative_date_range), output)
+        self.assertEqual(dataden.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_series_equal_original(self):
         seed(17)
-        input = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
-        output = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        output_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
         relative_date_range = 0
-        self.assertEqual(dataden.generate_date_series_from_series(input, relative_date_range), output)
+        self.assertEqual(dataden.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_series_after_original(self):
         seed(17)
-        input = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
-        output = [datetime(2022, 1, 5), datetime(2022, 1, 13)]
+        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        output_dates = [datetime(2022, 1, 5), datetime(2022, 1, 13)]
         relative_date_range = 5
-        self.assertEqual(dataden.generate_date_series_from_series(input, relative_date_range), output)
+        self.assertEqual(dataden.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_date_before_original(self):
         seed(17)
@@ -80,41 +80,14 @@ class TestDateSeriesGenerator(unittest.TestCase):
 class TestDataNullification(unittest.TestCase):
 
     def test_nullify_rows(self):
-        test_input_df = pd.DataFrame(data={
-            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
-            'date_col2': [datetime(2022, 1, 1), datetime(2022, 1, 1)]
-            }
-        )
-        col_null_fraction = {
-            'date_col1': .5,
-            'date_col2': .5
-        }
-        cols_matching_nullity = {}
-        test_output_df = pd.DataFrame(data={
-            'date_col1': [None, datetime(2022, 1, 1)],
-            'date_col2': [None, datetime(2022, 1, 1)]
-            }
-        )
-        pd.testing.assert_frame_equal(dataden.nullify_rows(test_input_df, col_null_fraction, cols_matching_nullity, seed=17), test_output_df)
-
-    def test_nullify_rows_with_col_matching(self):
-        test_input_df = pd.DataFrame(data={
-            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
-            'date_col2': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
-            'date_col3': [datetime(2022, 1, 1), datetime(2022, 1, 1)]
-            }
-        )
-        col_null_fraction = {
-            'date_col1': 0,
-            'date_col2': .5
-        }
-        cols_matching_nullity = {
-            'date_col2': 'date_col3'
-        }
-        test_output_df = pd.DataFrame(data={
-            'date_col1': [datetime(2022, 1, 1), datetime(2022, 1, 1)],
-            'date_col2': [None, datetime(2022, 1, 1)],
-            'date_col3': [None, datetime(2022, 1, 1)]
-            }
-        )
-        pd.testing.assert_frame_equal(dataden.nullify_rows(test_input_df, col_null_fraction, cols_matching_nullity, seed=17), test_output_df)
+        seed(817)
+        input_dates = [
+            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)],
+            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
+        ]
+        col_null_fraction = [.5, .5]
+        output_dates = [
+            [pd.NaT, pd.NaT, pd.NaT],
+            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
+        ]
+        self.assertEqual(dataden.nullify_rows(input_dates, col_null_fraction, seed=817), output_dates)

@@ -1,4 +1,5 @@
-from random import randrange, seed
+import csv
+from random import randrange, seed, random
 from datetime import datetime, timedelta
 
 import numpy as np
@@ -40,22 +41,27 @@ def generate_date_series_from_date(baseline_date: datetime, relative_date_range:
     date_list = [baseline_date] * series_length
     return generate_date_series_from_series(date_list, relative_date_range)
 
-def nullify_rows(df: pd.DataFrame, col_null_fraction: dict, cols_matching_nullity: dict, **kwargs):
+
+def nullify_rows(data_list: list, col_null_fraction: list, **kwargs):
     """
     This function will ensure columns match a percentage null.
     It will also aligns columns that need the same rows to
     be null or not null.
-    Having rows in columns match on null values takes precedence.
+    This will run on columns sequentially. If a row in one column
+    is null, then it will be null in subsequent columns.
+    This is because the goal of this is to create mock data of
+    dates in a sequential process.
     """
     seed = kwargs.get('seed', None)
 
-    cols_to_skip = cols_matching_nullity.values()
-    cols_to_iterate = list(set(df.columns) - set(cols_to_skip))
+    col_null_percentage_increases = [j-i for i, j in zip(col_null_fraction[:-1], col_null_fraction[1:])]
+    col_null_percentage_increases.insert(0, col_null_fraction[0])
 
-    for col in cols_to_iterate:
-        fraction = col_null_fraction.get(col)
-        df.loc[df.sample(frac=fraction, random_state=seed).index, col] = None
-    for key, value in cols_matching_nullity.items():
-        df.loc[df[key].isnull(), value] = pd.NaT
-    return df
-
+    for i in range(len(data_list)):
+        for j in range(len(data_list[0])):
+            if j > 0 and pd.isnull(data_list[i][j-1]):
+                data_list[i][j] = pd.NaT
+            else:
+                if random() < col_null_percentage_increases[i]:
+                    data_list[i][j] = pd.NaT
+    return data_list
