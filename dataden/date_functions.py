@@ -1,7 +1,6 @@
-from random import randrange, seed, random
+from random import random, randrange, seed
 from datetime import datetime, timedelta
 
-import numpy as np
 import pandas as pd
 
 

@@ -6,7 +6,7 @@ import unittest
 
 import pandas as pd
 
-from dataden import dataden, date_functions
+from dataden import dataden, date_functions, non_date_functions
 
 
 class TestDateGenerator(unittest.TestCase):
@@ -109,7 +109,7 @@ class TestDataNullification(unittest.TestCase):
 
 class TestCreateOutput(unittest.TestCase):
     
-    def test_create_output(self):    
+    def test_create_date_output(self):    
         starting_date = datetime(2022, 1, 1)
         series_length = 10
         col_differences = [10, 10]
@@ -127,7 +127,7 @@ class TestCreateOutput(unittest.TestCase):
             [pd.NaT, pd.NaT], 
             [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
         ]
-        self.assertEqual(dataden.create_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed), output)
+        self.assertEqual(dataden.create_date_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed), output)
     
     def test_export_output(self):
         input_data = [
@@ -157,7 +157,186 @@ class TestCreateOutput(unittest.TestCase):
         ]
         try:
             dataden.export_output(input_data, output_filename)
-            contents = list(csv.reader(open(output_filename)))
+            with open(output_filename) as f:
+                contents = list(csv.reader(f))
         finally:
             os.remove(output_filename)
         self.assertEqual(contents, output_data)
+
+class TestCreateNonDateCol(unittest.TestCase):
+
+    def test_create_non_date_col_lowercase_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            'nuyhtsrcaj',
+            'tgniwykzbv',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17), test_output)
+    
+    def test_create_non_date_col_uppercase_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            'NUYHTSRCAJ',
+            'TGNIWYKZBV',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=False, upper_allowed=True), test_output)
+
+    def test_create_non_date_col_mixed_case_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            'BPXpNKIfbt',
+            'MnAqSXuZdQ',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=True, upper_allowed=True), test_output)
+    
+    def test_create_non_date_col_numeric_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            '5892776103',
+            '7253894908',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=False, numeric_allowed=True), test_output)
+    
+    def test_create_non_date_col_alphanumeric_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            'GY7rVRPgbx',
+            'UpFt06y9dY',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=True, upper_allowed=True, numeric_allowed=True), test_output)
+    
+    def test_create_non_date_col_all_char_types_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            'M7#v40WibC',
+            '3sLx!,D?e8',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=True, upper_allowed=True, numeric_allowed=True, special_allowed=True), test_output)
+    
+    def test_create_non_date_col_all_char_types_string(self):
+        test_datatype = 'string'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            None,
+            None,
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_allowed=False), test_output)
+    
+    def test_create_non_date_col_int(self):
+        test_datatype = 'int'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            66,
+            53,
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_bound=0, upper_bound = 100), test_output)
+    
+    def test_create_non_date_col_int_upper_below_lower(self):
+        test_datatype = 'int'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            66,
+            53,
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_bound=100, upper_bound = 0), test_output)
+    
+    def test_create_non_date_col_int_upper_equal_lower(self):
+        test_datatype = 'int'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            100,
+            100,
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, lower_bound=100, upper_bound = 100), test_output)
+    
+    def test_create_non_date_col_int_no_bounds_provided(self):
+        test_datatype = 'int'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_output = [
+            None,
+            0,
+            0,
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17), test_output)

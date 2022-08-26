@@ -4,7 +4,7 @@ from random import seed
 
 from . import date_functions
 
-def create_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
+def create_date_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
     seed_number = kwargs.get('seed', None)
     if seed_number is not None:
         seed(seed_number)
