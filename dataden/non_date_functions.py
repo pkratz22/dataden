@@ -1,4 +1,4 @@
-from random import choices, randint, seed
+from random import choice, choices, randint, seed
 import string
 
 import pandas as pd
@@ -20,6 +20,9 @@ def generate_string(string_length: int, lower_allowed: bool, upper_allowed: bool
 
 def generate_int(min_val: int, max_val: int):
     return randint(min_val, max_val)
+
+def generate_list_item(item_list: list):
+    return choice(item_list)
 
 def create_non_date_col(datatype: str, col_relation: list, **kwargs):
     """
@@ -47,6 +50,8 @@ def create_non_date_col(datatype: str, col_relation: list, **kwargs):
         upper_bound = kwargs.get('upper_bound', 0)
         if lower_bound > upper_bound:
             lower_bound, upper_bound = upper_bound, lower_bound
+    elif datatype == 'list':
+        item_list = kwargs.get('item_list', [])
     if seed_number is not None:
         seed(seed_number)
 
@@ -60,4 +65,6 @@ def create_non_date_col(datatype: str, col_relation: list, **kwargs):
             new_field[i] = generate_string(string_length, lower_allowed, upper_allowed, numeric_allowed, special_allowed)
         elif datatype == 'int':
             new_field[i] = generate_int(lower_bound, upper_bound)
+        elif datatype == 'list':
+            new_field[i] = generate_list_item(item_list)
     return new_field

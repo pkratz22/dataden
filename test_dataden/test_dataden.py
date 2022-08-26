@@ -340,3 +340,228 @@ class TestCreateNonDateCol(unittest.TestCase):
             None,
         ]
         self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17), test_output)
+
+    def test_create_non_date_col_list(self):
+        test_datatype = 'list'
+        test_col_relation = [
+            pd.NaT,
+            datetime(2022, 8, 8),
+            datetime(2022, 8, 5),
+            None,
+        ]
+        test_list = ['Apple', 'Banana', 'Carrot']
+        test_output = [
+            None,
+            'Carrot',
+            'Banana',
+            None,
+        ]
+        self.assertEqual(non_date_functions.create_non_date_col(test_datatype, test_col_relation, seed=17, item_list=test_list), test_output)
+
+class TestGetColumn(unittest.TestCase):
+
+    def test_get_column_standard(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        position_to_extract = 0
+        output = [
+            pd.NaT,
+            datetime(2022, 1, 7, 0, 0),
+            pd.NaT,
+            datetime(2022, 1, 6, 0, 0),
+            datetime(2022, 1, 5, 0, 0),
+            datetime(2022, 1, 3, 0, 0),
+            datetime(2022, 1, 9, 0, 0),
+            datetime(2022, 1, 5, 0, 0),
+            pd.NaT,
+            datetime(2022, 1, 1, 0, 0),
+        ]
+        self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
+    
+    def test_get_column_above_start(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        position_to_extract = 10
+        output = [
+            pd.NaT,
+            pd.NaT,
+            pd.NaT,
+            datetime(2022, 1, 10, 0, 0),
+            datetime(2022, 1, 13, 0, 0),
+            datetime(2022, 1, 8, 0, 0),
+            datetime(2022, 1, 15, 0, 0),
+            datetime(2022, 1, 7, 0, 0),
+            pd.NaT,
+            datetime(2022, 1, 1, 0, 0),
+        ]
+        self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
+    
+    def test_get_column_below_start(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        position_to_extract = -5
+        output = [
+            pd.NaT,
+            datetime(2022, 1, 7, 0, 0),
+            pd.NaT,
+            datetime(2022, 1, 6, 0, 0),
+            datetime(2022, 1, 5, 0, 0),
+            datetime(2022, 1, 3, 0, 0),
+            datetime(2022, 1, 9, 0, 0),
+            datetime(2022, 1, 5, 0, 0),
+            pd.NaT,
+            datetime(2022, 1, 1, 0, 0),
+        ]
+        self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
+
+class TestInsertColumn(unittest.TestCase):
+
+    def test_insert_column_standard(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        new_list = [
+            None,
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+        ]
+        insert_pos = 2
+        output = [
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT, 'asfdasdfas'], 
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0), 'asfdasdfas'], 
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0), 'asfdasdfas'],
+        ]
+        self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
+
+    def test_insert_column_high_insert_pos(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        new_list = [
+            None,
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+        ]
+        insert_pos = 5
+        output = [
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT, 'asfdasdfas'], 
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0), 'asfdasdfas'], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0), 'asfdasdfas'], 
+            [pd.NaT, pd.NaT, None], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0), 'asfdasdfas'],
+        ]
+        self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
+
+    def test_insert_column_low_insert_pos(self):
+        input_list = [
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [pd.NaT, pd.NaT], 
+            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        new_list = [
+            None,
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+            None,
+            'asfdasdfas',
+        ]
+        insert_pos = -6
+        output = [
+            [None, pd.NaT, pd.NaT], 
+            ['asfdasdfas', datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [None, pd.NaT, pd.NaT], 
+            ['asfdasdfas', datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
+            ['asfdasdfas', datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
+            ['asfdasdfas', datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
+            ['asfdasdfas', datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
+            ['asfdasdfas', datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [None, pd.NaT, pd.NaT], 
+            ['asfdasdfas', datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+        ]
+        self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
