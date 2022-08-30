@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import date
 from random import seed
 import os
 import unittest
@@ -13,95 +13,95 @@ class TestDateGenerator(unittest.TestCase):
 
     def test_generate_date_before_original(self):
         seed(17)
-        start_date = datetime(2020, 8, 15)
+        start_date = date(2020, 8, 15)
         diff = -10
-        output_date = datetime(2020, 8, 13)
+        output_date = date(2020, 8, 13)
         self.assertEqual(related_date_functions.generate_date(start_date, diff=diff), output_date)
     
     def test_generate_date_equal_original(self):
         seed(17)
-        test_date = datetime(2020, 8, 15)
+        test_date = date(2020, 8, 15)
         diff = 0
         self.assertEqual(related_date_functions.generate_date(test_date, diff=diff), test_date)
 
     def test_generate_date_after_original(self):
         seed(17)
-        start_date = datetime(2020, 8, 15)
+        start_date = date(2020, 8, 15)
         diff = 10
-        output_date = datetime(2020, 8, 23)
+        output_date = date(2020, 8, 23)
         self.assertEqual(related_date_functions.generate_date(start_date, diff=diff), output_date)
 
     def test_generate_date_no_diff(self):
         seed(17)
-        test_date = datetime(2020, 8, 15)
+        test_date = date(2020, 8, 15)
         self.assertEqual(related_date_functions.generate_date(test_date), test_date)
 
 class TestDateSeriesGenerator(unittest.TestCase):
 
     def test_generate_date_series_from_series_before_original(self):
         seed(17)
-        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        input_dates = [date(2022, 1, 1), date(2022, 1, 10)]
         relative_date_range = -5
-        output_dates = [datetime(2021, 12, 31), datetime(2022, 1, 8)]
+        output_dates = [date(2021, 12, 31), date(2022, 1, 8)]
         
         self.assertEqual(related_date_functions.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_series_equal_original(self):
         seed(17)
-        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
-        output_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
+        input_dates = [date(2022, 1, 1), date(2022, 1, 10)]
+        output_dates = [date(2022, 1, 1), date(2022, 1, 10)]
         relative_date_range = 0
         self.assertEqual(related_date_functions.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_series_after_original(self):
         seed(17)
-        input_dates = [datetime(2022, 1, 1), datetime(2022, 1, 10)]
-        output_dates = [datetime(2022, 1, 5), datetime(2022, 1, 13)]
+        input_dates = [date(2022, 1, 1), date(2022, 1, 10)]
+        output_dates = [date(2022, 1, 5), date(2022, 1, 13)]
         relative_date_range = 5
         self.assertEqual(related_date_functions.generate_date_series_from_series(input_dates, relative_date_range), output_dates)
 
     def test_generate_date_series_from_date_before_original(self):
         seed(17)
-        test_date = datetime(2022, 1, 1)
+        test_date = date(2022, 1, 1)
         relative_date_range = -5
         series_length = 2
-        output_test_series = [datetime(2021, 12, 31), datetime(2021, 12, 30)]
+        output_test_series = [date(2021, 12, 31), date(2021, 12, 30)]
         self.assertEqual(related_date_functions.generate_date_series_from_date(test_date, relative_date_range, series_length), output_test_series)
 
     def test_generate_date_series_from_date_equal_original(self):
         seed(17)
-        test_date = datetime(2022, 1, 1)
+        test_date = date(2022, 1, 1)
         relative_date_range = 0
         series_length = 2
-        output_test_series = [datetime(2022, 1, 1), datetime(2022, 1, 1)]
+        output_test_series = [date(2022, 1, 1), date(2022, 1, 1)]
         self.assertEqual(related_date_functions.generate_date_series_from_date(test_date, relative_date_range, series_length), output_test_series)
 
     def test_generate_date_series_from_date_after_original(self):
         seed(17)
-        test_date = datetime(2022, 1, 1)
+        test_date = date(2022, 1, 1)
         relative_date_range = 5
         series_length = 2
-        output_test_series = [datetime(2022, 1, 5), datetime(2022, 1, 4)]
+        output_test_series = [date(2022, 1, 5), date(2022, 1, 4)]
         self.assertEqual(related_date_functions.generate_date_series_from_date(test_date, relative_date_range, series_length), output_test_series)
 
 class TestDataNullification(unittest.TestCase):
 
     def test_nullify_rows_date_cols(self):
         input_dates = [
-            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)],
-            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
+            [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)],
+            [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)]
         ]
         col_null_fraction = [.5, .5, .5]
         output_dates = [
             [pd.NaT, pd.NaT, pd.NaT],
-            [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
+            [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)]
         ]
         self.assertEqual(related_date_functions.nullify_rows_date_cols(input_dates, col_null_fraction, seed=8), output_dates)
 
     def test_col_null_percent_decreasing_error(self):
             input_dates = [
-                [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)],
-                [datetime(2022, 1, 1), datetime(2022, 1, 1), datetime(2022, 1, 1)]
+                [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)],
+                [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)]
             ]
             col_null_fraction = [.5, .6, .4]
             with self.assertRaises(related_date_functions.ColNullPercentageDecreasingError):
@@ -110,50 +110,50 @@ class TestDataNullification(unittest.TestCase):
 class TestCreateOutput(unittest.TestCase):
     
     def test_create_date_output(self):    
-        starting_date = datetime(2022, 1, 1)
+        starting_date = date(2022, 1, 1)
         series_length = 10
         col_differences = [10, 10]
         col_null_fraction = [.2, .5]
         seed = 17
         output = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         self.assertEqual(dataden.create_date_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed), output)
     
     def test_export_output(self):
         input_data = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         output_filename = 'test.csv'
         output_data = [
             ['NaT', 'NaT'], 
-            ['2022-01-07 00:00:00', 'NaT'], 
+            ['2022-01-07', 'NaT'], 
             ['NaT', 'NaT'], 
-            ['2022-01-06 00:00:00', '2022-01-10 00:00:00'], 
-            ['2022-01-05 00:00:00', '2022-01-13 00:00:00'], 
-            ['2022-01-03 00:00:00', '2022-01-08 00:00:00'], 
-            ['2022-01-09 00:00:00', '2022-01-15 00:00:00'], 
-            ['2022-01-05 00:00:00', '2022-01-07 00:00:00'], 
+            ['2022-01-06', '2022-01-10'], 
+            ['2022-01-05', '2022-01-13'], 
+            ['2022-01-03', '2022-01-08'], 
+            ['2022-01-09', '2022-01-15'], 
+            ['2022-01-05', '2022-01-07'], 
             ['NaT', 'NaT'], 
-            ['2022-01-01 00:00:00', '2022-01-01 00:00:00'],
+            ['2022-01-01', '2022-01-01'],
         ]
         try:
             dataden.export_output(input_data, output_filename)
@@ -163,14 +163,14 @@ class TestCreateOutput(unittest.TestCase):
             os.remove(output_filename)
         self.assertEqual(contents, output_data)
 
-class TestCreateNonDateCol(unittest.TestCase):
+class TestSeparateCol(unittest.TestCase):
 
     def test_create_individual_col_lowercase_string(self):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -185,8 +185,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -201,8 +201,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -217,8 +217,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -233,8 +233,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -249,8 +249,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -265,8 +265,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'string'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -281,8 +281,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'int'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -297,8 +297,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'int'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -313,8 +313,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'int'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -329,8 +329,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'int'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_output = [
@@ -345,8 +345,8 @@ class TestCreateNonDateCol(unittest.TestCase):
         test_datatype = 'list'
         test_col_relation = [
             pd.NaT,
-            datetime(2022, 8, 8),
-            datetime(2022, 8, 5),
+            date(2022, 8, 8),
+            date(2022, 8, 5),
             None,
         ]
         test_list = ['Apple', 'Banana', 'Carrot']
@@ -358,89 +358,145 @@ class TestCreateNonDateCol(unittest.TestCase):
         ]
         self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, item_list=test_list), test_output)
 
+    def test_create_individual_col_date_start_after_end(self):
+        test_datatype = 'date'
+        test_col_relation = [
+            pd.NaT,
+            date(2022, 8, 8),
+            date(2022, 8, 5),
+            None,
+        ]
+        test_upper_bound = date(1950, 1, 1)
+        test_lower_bound = date(1970, 1, 1)
+        test_output = [
+            None,
+            date(1961, 9, 16),
+            date(1959, 4, 16),
+            None,
+        ]
+        self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
+    
+    def test_create_individual_col_date_start_equal_end(self):
+        test_datatype = 'date'
+        test_col_relation = [
+            pd.NaT,
+            date(2022, 8, 8),
+            date(2022, 8, 5),
+            None,
+        ]
+        test_upper_bound = date(1950, 1, 1)
+        test_lower_bound = date(1950, 1, 1)
+        test_output = [
+            None,
+            date(1950, 1, 1),
+            date(1950, 1, 1),
+            None,
+        ]
+        self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
+    
+    
+    def test_create_individual_col_date_start_before_end(self):
+        test_datatype = 'date'
+        test_col_relation = [
+            pd.NaT,
+            date(2022, 8, 8),
+            date(2022, 8, 5),
+            None,
+        ]
+        test_lower_bound = date(1950, 1, 1)
+        test_upper_bound = date(1970, 1, 1)
+        test_output = [
+            None,
+            date(1961, 9, 16),
+            date(1959, 4, 16),
+            None,
+        ]
+        self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
+    
+
 class TestGetColumn(unittest.TestCase):
 
     def test_get_column_standard(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         position_to_extract = 0
         output = [
             pd.NaT,
-            datetime(2022, 1, 7, 0, 0),
+            date(2022, 1, 7),
             pd.NaT,
-            datetime(2022, 1, 6, 0, 0),
-            datetime(2022, 1, 5, 0, 0),
-            datetime(2022, 1, 3, 0, 0),
-            datetime(2022, 1, 9, 0, 0),
-            datetime(2022, 1, 5, 0, 0),
+            date(2022, 1, 6),
+            date(2022, 1, 5),
+            date(2022, 1, 3),
+            date(2022, 1, 9),
+            date(2022, 1, 5),
             pd.NaT,
-            datetime(2022, 1, 1, 0, 0),
+            date(2022, 1, 1),
         ]
         self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
     
     def test_get_column_above_start(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         position_to_extract = 10
         output = [
             pd.NaT,
             pd.NaT,
             pd.NaT,
-            datetime(2022, 1, 10, 0, 0),
-            datetime(2022, 1, 13, 0, 0),
-            datetime(2022, 1, 8, 0, 0),
-            datetime(2022, 1, 15, 0, 0),
-            datetime(2022, 1, 7, 0, 0),
+            date(2022, 1, 10),
+            date(2022, 1, 13),
+            date(2022, 1, 8),
+            date(2022, 1, 15),
+            date(2022, 1, 7),
             pd.NaT,
-            datetime(2022, 1, 1, 0, 0),
+            date(2022, 1, 1),
         ]
         self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
     
     def test_get_column_below_start(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         position_to_extract = -5
         output = [
             pd.NaT,
-            datetime(2022, 1, 7, 0, 0),
+            date(2022, 1, 7),
             pd.NaT,
-            datetime(2022, 1, 6, 0, 0),
-            datetime(2022, 1, 5, 0, 0),
-            datetime(2022, 1, 3, 0, 0),
-            datetime(2022, 1, 9, 0, 0),
-            datetime(2022, 1, 5, 0, 0),
+            date(2022, 1, 6),
+            date(2022, 1, 5),
+            date(2022, 1, 3),
+            date(2022, 1, 9),
+            date(2022, 1, 5),
             pd.NaT,
-            datetime(2022, 1, 1, 0, 0),
+            date(2022, 1, 1),
         ]
         self.assertEqual(dataden.get_column(input_list, position_to_extract), output)
 
@@ -449,15 +505,15 @@ class TestInsertColumn(unittest.TestCase):
     def test_insert_column_standard(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         new_list = [
             None,
@@ -474,30 +530,30 @@ class TestInsertColumn(unittest.TestCase):
         insert_pos = 2
         output = [
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT, 'asfdasdfas'], 
+            [date(2022, 1, 7), pd.NaT, 'asfdasdfas'], 
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0), 'asfdasdfas'], 
+            [date(2022, 1, 6), date(2022, 1, 10), 'asfdasdfas'], 
+            [date(2022, 1, 5), date(2022, 1, 13), 'asfdasdfas'], 
+            [date(2022, 1, 3), date(2022, 1, 8), 'asfdasdfas'], 
+            [date(2022, 1, 9), date(2022, 1, 15), 'asfdasdfas'], 
+            [date(2022, 1, 5), date(2022, 1, 7), 'asfdasdfas'], 
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0), 'asfdasdfas'],
+            [date(2022, 1, 1), date(2022, 1, 1), 'asfdasdfas'],
         ]
         self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
 
     def test_insert_column_high_insert_pos(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         new_list = [
             None,
@@ -514,30 +570,30 @@ class TestInsertColumn(unittest.TestCase):
         insert_pos = 5
         output = [
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT, 'asfdasdfas'], 
+            [date(2022, 1, 7), pd.NaT, 'asfdasdfas'], 
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0), 'asfdasdfas'], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0), 'asfdasdfas'], 
+            [date(2022, 1, 6), date(2022, 1, 10), 'asfdasdfas'], 
+            [date(2022, 1, 5), date(2022, 1, 13), 'asfdasdfas'], 
+            [date(2022, 1, 3), date(2022, 1, 8), 'asfdasdfas'], 
+            [date(2022, 1, 9), date(2022, 1, 15), 'asfdasdfas'], 
+            [date(2022, 1, 5), date(2022, 1, 7), 'asfdasdfas'], 
             [pd.NaT, pd.NaT, None], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0), 'asfdasdfas'],
+            [date(2022, 1, 1), date(2022, 1, 1), 'asfdasdfas'],
         ]
         self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
 
     def test_insert_column_low_insert_pos(self):
         input_list = [
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            [date(2022, 1, 7), pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            [datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            [datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            [datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            [date(2022, 1, 6), date(2022, 1, 10)], 
+            [date(2022, 1, 5), date(2022, 1, 13)], 
+            [date(2022, 1, 3), date(2022, 1, 8)], 
+            [date(2022, 1, 9), date(2022, 1, 15)], 
+            [date(2022, 1, 5), date(2022, 1, 7)], 
             [pd.NaT, pd.NaT], 
-            [datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            [date(2022, 1, 1), date(2022, 1, 1)],
         ]
         new_list = [
             None,
@@ -554,14 +610,14 @@ class TestInsertColumn(unittest.TestCase):
         insert_pos = -6
         output = [
             [None, pd.NaT, pd.NaT], 
-            ['asfdasdfas', datetime(2022, 1, 7, 0, 0), pd.NaT], 
+            ['asfdasdfas', date(2022, 1, 7), pd.NaT], 
             [None, pd.NaT, pd.NaT], 
-            ['asfdasdfas', datetime(2022, 1, 6, 0, 0), datetime(2022, 1, 10, 0, 0)], 
-            ['asfdasdfas', datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 13, 0, 0)], 
-            ['asfdasdfas', datetime(2022, 1, 3, 0, 0), datetime(2022, 1, 8, 0, 0)], 
-            ['asfdasdfas', datetime(2022, 1, 9, 0, 0), datetime(2022, 1, 15, 0, 0)], 
-            ['asfdasdfas', datetime(2022, 1, 5, 0, 0), datetime(2022, 1, 7, 0, 0)], 
+            ['asfdasdfas', date(2022, 1, 6), date(2022, 1, 10)], 
+            ['asfdasdfas', date(2022, 1, 5), date(2022, 1, 13)], 
+            ['asfdasdfas', date(2022, 1, 3), date(2022, 1, 8)], 
+            ['asfdasdfas', date(2022, 1, 9), date(2022, 1, 15)], 
+            ['asfdasdfas', date(2022, 1, 5), date(2022, 1, 7)], 
             [None, pd.NaT, pd.NaT], 
-            ['asfdasdfas', datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 1, 0, 0)],
+            ['asfdasdfas', date(2022, 1, 1), date(2022, 1, 1)],
         ]
         self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)

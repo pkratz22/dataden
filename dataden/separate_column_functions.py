@@ -26,6 +26,10 @@ def generate_list_item(item_list: list):
     return choice(item_list)
 
 def generate_date(start: date, end: date):
+    if start > end:
+        start, end = end, start
+    if start == end:
+        return start
     diff = (end - start).days
     days_from_start = randrange(0, diff)
     return start + timedelta(days=days_from_start)
@@ -63,8 +67,8 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
     elif datatype == 'list':
         item_list = kwargs.get('item_list', [])
     elif datatype == 'date':
-        lower_bound = kwargs.get('lower_bound', date(1900,0,0))
-        upper_bound = kwargs.get('upper_bound', date(2100,0,0))
+        lower_bound = kwargs.get('lower_bound', date(1900,1,1))
+        upper_bound = kwargs.get('upper_bound', date(2100,1,1))
     if seed_number is not None:
         seed(seed_number)
 
