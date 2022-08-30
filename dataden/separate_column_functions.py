@@ -24,7 +24,7 @@ def generate_int(min_val: int, max_val: int):
 def generate_list_item(item_list: list):
     return choice(item_list)
 
-def create_non_date_col(datatype: str, col_relation: list, **kwargs):
+def create_individual_col(datatype: str, col_relation: list, **kwargs):
     """
     Create list of non-date data.
     Datatype options:
