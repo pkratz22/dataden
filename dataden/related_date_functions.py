@@ -1,5 +1,5 @@
 from random import random, randrange, seed
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 import pandas as pd
 
@@ -10,7 +10,7 @@ class ColNullPercentageDecreasingError(Exception):
         super().__init__(message)
 
 
-def generate_date(start: datetime, **kwargs):
+def generate_date(start: date, **kwargs):
     """
     This function will return a random date between two dates.
     """
@@ -38,7 +38,7 @@ def generate_date_series_from_series(original_series: list, relative_date_range:
     return new_series
 
 
-def generate_date_series_from_date(baseline_date: datetime, relative_date_range: int, series_length: int):
+def generate_date_series_from_date(baseline_date: date, relative_date_range: int, series_length: int):
     """
     This will generate a series of a specified length relative to a date.
     """

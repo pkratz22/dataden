@@ -1,4 +1,5 @@
-from random import choice, choices, randint, seed
+from datetime import date, timedelta
+from random import choice, choices, randint, randrange, seed
 import string
 
 import pandas as pd
@@ -24,6 +25,11 @@ def generate_int(min_val: int, max_val: int):
 def generate_list_item(item_list: list):
     return choice(item_list)
 
+def generate_date(start: date, end: date):
+    diff = (end - start).days
+    days_from_start = randrange(0, diff)
+    return start + timedelta(days=days_from_start)
+
 def create_individual_col(datatype: str, col_relation: list, **kwargs):
     """
     Create list of non-date data.
@@ -31,12 +37,16 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
         'character string':
             default is lowercase characters
             can include:
+                lower_allowed = True
                 upper_allowed = True
                 numeric_allowed = True
                 special_allowed = True
-        'int'
+        'int':
+            default is 0
+            can include:
+                lower_bound
+                upper_bound
     """
-    
     default_string_length = 10
     string_length = kwargs.get('string_length', default_string_length)
     seed_number = kwargs.get('seed', None)
@@ -52,6 +62,9 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
             lower_bound, upper_bound = upper_bound, lower_bound
     elif datatype == 'list':
         item_list = kwargs.get('item_list', [])
+    elif datatype == 'date':
+        lower_bound = kwargs.get('lower_bound', date(1900,0,0))
+        upper_bound = kwargs.get('upper_bound', date(2100,0,0))
     if seed_number is not None:
         seed(seed_number)
 
@@ -67,4 +80,6 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
             new_field[i] = generate_int(lower_bound, upper_bound)
         elif datatype == 'list':
             new_field[i] = generate_list_item(item_list)
+        elif datatype == 'date':
+            new_field[i] = generate_date(lower_bound, upper_bound)
     return new_field
