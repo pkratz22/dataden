@@ -1,10 +1,10 @@
 import csv
-from datetime import datetime
+from datetime import date
 from random import seed
 
 from . import related_date_functions, separate_column_functions
 
-def create_date_output(starting_date: datetime, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
+def create_date_output(starting_date: date, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
     seed_number = kwargs.get('seed', None)
     if seed_number is not None:
         seed(seed_number)
