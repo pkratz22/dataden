@@ -16,7 +16,7 @@ def generate_string(string_length: int, lower_allowed: bool, upper_allowed: bool
     if numeric_allowed:
         chars_allowed += string.digits
     if special_allowed:
-        chars_allowed += '!$%^&*.,@#/?'
+        chars_allowed += '!$%^&*.@#/?'
     return ''.join(choices(chars_allowed, k=string_length))
 
 def generate_int(min_val: int, max_val: int):
