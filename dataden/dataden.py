@@ -36,9 +36,9 @@ def insert_column(current_list: list, new_list: list, insert_pos: int):
     return [a[:insert_pos]+[x]+a[insert_pos:] for a,x in zip(current_list, new_list)]
 
 
-def insert_non_date_columns(current_list: list, position_of_column_to_match_nulls: int, position_to_insert: int, datatype: str, **kwargs):
+def insert_individual_columns(current_list: list, position_of_column_to_match_nulls: int, position_to_insert: int, datatype: str, **kwargs):
     column_to_match_nulls = get_column(current_list, position_of_column_to_match_nulls)
-    new_col = separate_column_functions.create_non_date_col(datatype, column_to_match_nulls, **kwargs)
+    new_col = separate_column_functions.create_individual_col(datatype, column_to_match_nulls, **kwargs)
     result = insert_column(current_list, new_col, position_to_insert)
     return result
 
