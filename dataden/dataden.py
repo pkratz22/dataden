@@ -4,7 +4,9 @@ from random import seed
 
 from . import related_date_functions, separate_column_functions
 
-def create_date_output(starting_date: date, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
+def create_related_date_output(starting_date: date, series_length: int, col_differences: list, col_null_fraction: list, **kwargs):
+    date_format = kwargs.get('date_format', '%Y-%m-%d')
+    
     seed_number = kwargs.get('seed', None)
     if seed_number is not None:
         seed(seed_number)
@@ -20,7 +22,10 @@ def create_date_output(starting_date: date, series_length: int, col_differences:
 
     master_data = list(list(a) for a in zip(*col_dict.values()))
 
+    master_data = [[ind_date.strftime(date_format) for ind_date in date_row] for date_row in master_data]
+
     master_data = related_date_functions.nullify_rows_date_cols(master_data, col_null_fraction)
+
     return master_data
 
 

@@ -15,6 +15,7 @@ def generate_date(start: date, **kwargs):
     This function will return a random date between two dates.
     """
     diff = kwargs.get('diff', None)
+    date_format = kwargs.get('date_format', '%Y-%m-%d')
     if diff is None:
         return start
     elif diff < 0:

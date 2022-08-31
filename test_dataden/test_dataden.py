@@ -109,7 +109,7 @@ class TestDataNullification(unittest.TestCase):
 
 class TestCreateOutput(unittest.TestCase):
     
-    def test_create_date_output(self):    
+    def test_create_related_date_output(self):    
         starting_date = date(2022, 1, 1)
         series_length = 10
         col_differences = [10, 10]
@@ -117,18 +117,38 @@ class TestCreateOutput(unittest.TestCase):
         seed = 17
         output = [
             [pd.NaT, pd.NaT], 
-            [date(2022, 1, 7), pd.NaT], 
+            ['2022-01-07', pd.NaT], 
             [pd.NaT, pd.NaT], 
-            [date(2022, 1, 6), date(2022, 1, 10)], 
-            [date(2022, 1, 5), date(2022, 1, 13)], 
-            [date(2022, 1, 3), date(2022, 1, 8)], 
-            [date(2022, 1, 9), date(2022, 1, 15)], 
-            [date(2022, 1, 5), date(2022, 1, 7)], 
+            ['2022-01-06', '2022-01-10'], 
+            ['2022-01-05', '2022-01-13'], 
+            ['2022-01-03', '2022-01-08'], 
+            ['2022-01-09', '2022-01-15'], 
+            ['2022-01-05', '2022-01-07'], 
             [pd.NaT, pd.NaT], 
-            [date(2022, 1, 1), date(2022, 1, 1)],
+            ['2022-01-01', '2022-01-01'],
         ]
-        self.assertEqual(dataden.create_date_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed), output)
+        self.assertEqual(dataden.create_related_date_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed), output)
     
+    def test_create_related_date_output_change_format(self):    
+        starting_date = date(2022, 1, 1)
+        series_length = 10
+        col_differences = [10, 10]
+        col_null_fraction = [.2, .5]
+        seed = 17
+        output = [
+            [pd.NaT, pd.NaT], 
+            ['Jan 7, 2022', pd.NaT], 
+            [pd.NaT, pd.NaT], 
+            ['Jan 6, 2022', 'Jan 10, 2022'], 
+            ['Jan 5, 2022', 'Jan 13, 2022'], 
+            ['Jan 3, 2022', 'Jan 8, 2022'], 
+            ['Jan 9, 2022', 'Jan 15, 2022'], 
+            ['Jan 5, 2022', 'Jan 7, 2022'], 
+            [pd.NaT, pd.NaT], 
+            ['Jan 1, 2022', 'Jan 1, 2022'],
+        ]
+        self.assertEqual(dataden.create_related_date_output(starting_date, series_length, col_differences, col_null_fraction, date_format='%b %-d, %Y', seed=seed), output)
+
     def test_export_output(self):
         input_data = [
             [pd.NaT, pd.NaT], 
@@ -370,8 +390,8 @@ class TestSeparateCol(unittest.TestCase):
         test_lower_bound = date(1970, 1, 1)
         test_output = [
             None,
-            date(1961, 9, 16),
-            date(1959, 4, 16),
+            '1961-09-16',
+            '1959-04-16',
             None,
         ]
         self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
@@ -393,8 +413,7 @@ class TestSeparateCol(unittest.TestCase):
             None,
         ]
         self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
-    
-    
+     
     def test_create_individual_col_date_start_before_end(self):
         test_datatype = 'date'
         test_col_relation = [
@@ -407,8 +426,8 @@ class TestSeparateCol(unittest.TestCase):
         test_upper_bound = date(1970, 1, 1)
         test_output = [
             None,
-            date(1961, 9, 16),
-            date(1959, 4, 16),
+            '1961-09-16',
+            '1959-04-16',
             None,
         ]
         self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)

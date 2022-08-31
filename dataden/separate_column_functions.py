@@ -25,14 +25,15 @@ def generate_int(min_val: int, max_val: int):
 def generate_list_item(item_list: list):
     return choice(item_list)
 
-def generate_date(start: date, end: date):
+def generate_date(start: date, end: date, date_format: str):
     if start > end:
         start, end = end, start
     if start == end:
         return start
     diff = (end - start).days
     days_from_start = randrange(0, diff)
-    return start + timedelta(days=days_from_start)
+    output_date = start + timedelta(days=days_from_start)
+    return output_date.strftime(date_format)
 
 def create_individual_col(datatype: str, col_relation: list, **kwargs):
     """
@@ -69,6 +70,7 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
     elif datatype == 'date':
         lower_bound = kwargs.get('lower_bound', date(1900,1,1))
         upper_bound = kwargs.get('upper_bound', date(2100,1,1))
+        date_format = kwargs.get('date_format', '%Y-%m-%d')
     if seed_number is not None:
         seed(seed_number)
 
@@ -85,5 +87,5 @@ def create_individual_col(datatype: str, col_relation: list, **kwargs):
         elif datatype == 'list':
             new_field[i] = generate_list_item(item_list)
         elif datatype == 'date':
-            new_field[i] = generate_date(lower_bound, upper_bound)
+            new_field[i] = generate_date(lower_bound, upper_bound, date_format)
     return new_field
