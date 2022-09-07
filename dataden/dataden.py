@@ -38,6 +38,8 @@ def get_column(current_list: list, position_to_extract: int):
 
 
 def insert_column(current_list: list, new_list: list, insert_pos: int):
+    if not current_list:
+        return new_list
     return [a[:insert_pos]+[x]+a[insert_pos:] for a,x in zip(current_list, new_list)]
 
 

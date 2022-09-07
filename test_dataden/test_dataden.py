@@ -432,7 +432,6 @@ class TestSeparateCol(unittest.TestCase):
         ]
         self.assertEqual(separate_column_functions.create_individual_col(test_datatype, test_col_relation, seed=17, lower_bound=test_lower_bound, upper_bound=test_upper_bound), test_output)
     
-
 class TestGetColumn(unittest.TestCase):
 
     def test_get_column_standard(self):
@@ -638,5 +637,20 @@ class TestInsertColumn(unittest.TestCase):
             ['asfdasdfas', date(2022, 1, 5), date(2022, 1, 7)], 
             [None, pd.NaT, pd.NaT], 
             ['asfdasdfas', date(2022, 1, 1), date(2022, 1, 1)],
+        ]
+        self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
+
+    def test_insert_column_empty_list(self):
+        input_list = []
+        new_list = [
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
+        ]
+        insert_pos = 0
+        output = [
+            'asfdasdfas',
+            'asfdasdfas',
+            'asfdasdfas',
         ]
         self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
