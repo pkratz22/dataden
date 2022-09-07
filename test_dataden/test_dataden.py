@@ -654,3 +654,56 @@ class TestInsertColumn(unittest.TestCase):
             'asfdasdfas',
         ]
         self.assertEqual(dataden.insert_column(input_list, new_list, insert_pos), output)
+
+class TestInsertIndividualColumn(unittest.TestCase):
+
+    def test_insert_individual_column_original_not_empty(self):
+        current_list = [
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+            'hello',
+        ]
+        position_of_column_to_match_nulls = 0
+        position_to_insert = 0
+        num_rows = 10
+        datatype = 'string'
+        output = [
+            ['nuyhtsrcaj', 'hello'],
+            ['tgniwykzbv', 'hello'],
+            ['wdsoyfowqi', 'hello'],
+            ['cymzdvvxaj', 'hello'],
+            ['btjyjuwgoy', 'hello'],
+            ['njgufpoodr', 'hello'],
+            ['xiixphatjm', 'hello'],
+            ['hqsibzxaor', 'hello'],
+            ['ktypkfgdcf', 'hello'],
+            ['vnuxvbycuv', 'hello'],
+        ]
+        self.assertEqual(dataden.insert_individual_columns(current_list, position_of_column_to_match_nulls, position_to_insert, num_rows, datatype, seed=17), output)
+    
+    def test_insert_individual_column_original_empty(self):
+        current_list = []
+        position_of_column_to_match_nulls = 0
+        position_to_insert = 0
+        num_rows = 10
+        datatype = 'string'
+        output = [
+            'nuyhtsrcaj',
+            'tgniwykzbv',
+            'wdsoyfowqi',
+            'cymzdvvxaj',
+            'btjyjuwgoy',
+            'njgufpoodr',
+            'xiixphatjm',
+            'hqsibzxaor',
+            'ktypkfgdcf',
+            'vnuxvbycuv',
+            ]
+        self.assertEqual(dataden.insert_individual_columns(current_list, position_of_column_to_match_nulls, position_to_insert, num_rows, datatype, seed=17), output)

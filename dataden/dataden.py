@@ -40,11 +40,19 @@ def get_column(current_list: list, position_to_extract: int):
 def insert_column(current_list: list, new_list: list, insert_pos: int):
     if not current_list:
         return new_list
+    if not isinstance(current_list[0], list):
+        if insert_pos <= 0:
+            return [list(l) for l in zip(new_list, current_list)]
+        else:
+            return [list(l) for l in zip(current_list, new_list)]
     return [a[:insert_pos]+[x]+a[insert_pos:] for a,x in zip(current_list, new_list)]
 
 
-def insert_individual_columns(current_list: list, position_of_column_to_match_nulls: int, position_to_insert: int, datatype: str, **kwargs):
-    column_to_match_nulls = get_column(current_list, position_of_column_to_match_nulls)
+def insert_individual_columns(current_list: list, position_of_column_to_match_nulls: int, position_to_insert: int, num_rows: int, datatype: str, **kwargs):
+    if current_list:
+        column_to_match_nulls = get_column(current_list, position_of_column_to_match_nulls)
+    else:
+        column_to_match_nulls = ['a'] * num_rows # only used to create column, data won't be used, which is why we use the temporary data 'a'
     new_col = separate_column_functions.create_individual_col(datatype, column_to_match_nulls, **kwargs)
     result = insert_column(current_list, new_col, position_to_insert)
     return result
