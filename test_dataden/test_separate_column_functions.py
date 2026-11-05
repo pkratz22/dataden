@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-from dataden import separate_column_functions
+from src import separate_column_functions
 
 
 class TestSeparateCol(unittest.TestCase):

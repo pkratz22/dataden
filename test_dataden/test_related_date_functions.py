@@ -4,7 +4,7 @@ import unittest
 
 import pandas as pd
 
-from dataden import related_date_functions
+import src.related_date_functions as related_date_functions
 
 
 class TestDateGenerator(unittest.TestCase):

@@ -1,10 +1,8 @@
 import csv
 from datetime import date
 from random import seed
-import related_date_functions
-import separate_column_functions
-
-
+from src import related_date_functions
+from src import separate_column_functions
 
 class InputLogicError(Exception):
     def __init__(self, message):
@@ -128,7 +126,16 @@ class dataden():
 
 
 def main():
-    return 1
+    #test with crm data
+    starting_date = date(2022, 1, 1)
+    series_length = 1000
+    col_differences = [400, 30, 30, 10]
+    col_null_fraction = [0, 0, .5, .5]
+    crm_test = dataden()
+    crm_test.create_related_date_output(starting_date, series_length, col_differences, col_null_fraction)
+    crm_test.create_headers(['Enrollment Date', 'Kit Ship Date', 'Kit Return Date', 'Results Available Date'])
+    crm_test.export_output('crm_test.csv')
+    return(crm_test)
 
 if __name__ == '__main__':
     main()

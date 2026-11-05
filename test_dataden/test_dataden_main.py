@@ -6,7 +6,9 @@ import unittest
 
 import pandas as pd
 
-from dataden import dataden, related_date_functions, separate_column_functions
+from src import dataden_main
+from src import related_date_functions
+from src import separate_column_functions
 
 
 class TestCreateRelatedDateOutput(unittest.TestCase):
@@ -29,7 +31,7 @@ class TestCreateRelatedDateOutput(unittest.TestCase):
             [pd.NaT, pd.NaT],
             ['2022-01-01', '2022-01-01'],
         ]
-        dd_test = dataden.dataden()
+        dd_test = dataden_main.dataden()
         dd_test.create_related_date_output(starting_date, series_length, col_differences, col_null_fraction, seed=seed)
         self.assertEqual(dd_test.data, output)
 
@@ -51,7 +53,7 @@ class TestCreateRelatedDateOutput(unittest.TestCase):
             [pd.NaT, pd.NaT],
             ['Jan 1, 2022', 'Jan 1, 2022'],
         ]
-        dd_test = dataden.dataden()
+        dd_test = dataden_main.dataden()
         dd_test.create_related_date_output(starting_date, series_length, col_differences, col_null_fraction, date_format='%b %-d, %Y', seed=seed)
         self.assertEqual(dd_test.data, output)
 
@@ -70,7 +72,7 @@ class TestExportOutput(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_data)
+        dd_test = dataden_main.dataden(input_data)
         output_filename = 'test.csv'
         output_data = [
             ['NaT', 'NaT'],
@@ -105,7 +107,7 @@ class TestExportOutput(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_data)
+        dd_test = dataden_main.dataden(input_data)
         dd_test.create_headers(['col 1', 'col 2'])
         output_filename = 'test.csv'
         output_data = [
@@ -142,7 +144,7 @@ class TestExportOutput(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_data)
+        dd_test = dataden_main.dataden(input_data)
         dd_test.create_headers(['col 1', 'col 2'])
         output_filename1 = 'test1.csv'
         output_filename2 = 'test2.csv'
@@ -160,9 +162,7 @@ class TestExportOutput(unittest.TestCase):
             ['2022-01-01', '2022-01-01'],
         ]
         try:
-            print('run 1')
             dd_test.export_output(output_filename1)
-            print('run 2')
             dd_test.export_output(output_filename2)
             with open(output_filename2) as f:
                 contents = list(csv.reader(f))
@@ -185,7 +185,7 @@ class TestExportOutput(unittest.TestCase):
             [date(2022, 1, 1), date(2022, 1, 1), date(2022, 1, 1)],
         ]
         subset = [0,2]
-        dd_test = dataden.dataden(input_data)
+        dd_test = dataden_main.dataden(input_data)
         dd_test.create_headers(['col 1', 'col 2', 'col 3'])
         output_filename = 'test.csv'
         output_data = [
@@ -208,8 +208,6 @@ class TestExportOutput(unittest.TestCase):
         finally:
             os.remove(output_filename)
         self.assertEqual(contents, output_data)
-        
-
 
 class TestGetColumn(unittest.TestCase):
 
@@ -226,7 +224,7 @@ class TestGetColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         position_to_extract = 0
         output = [
             pd.NaT,
@@ -255,7 +253,7 @@ class TestGetColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         position_to_extract = 10
         output = [
             pd.NaT,
@@ -284,7 +282,7 @@ class TestGetColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         position_to_extract = -5
         output = [
             pd.NaT,
@@ -315,7 +313,7 @@ class TestInsertColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ] 
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         new_list = [
             None,
             'asfdasdfas',
@@ -357,7 +355,7 @@ class TestInsertColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         new_list = [
             None,
             'asfdasdfas',
@@ -399,7 +397,7 @@ class TestInsertColumn(unittest.TestCase):
             [pd.NaT, pd.NaT],
             [date(2022, 1, 1), date(2022, 1, 1)],
         ]
-        dd_test = dataden.dataden(input_list)
+        dd_test = dataden_main.dataden(input_list)
         new_list = [
             None,
             'asfdasdfas',
@@ -429,7 +427,7 @@ class TestInsertColumn(unittest.TestCase):
         self.assertEqual(dd_test.data, output)
 
     def test_insert_column_empty_list(self):
-        dd_test = dataden.dataden()
+        dd_test = dataden_main.dataden()
         new_list = [
             'asfdasdfas',
             'asfdasdfas',
@@ -459,7 +457,7 @@ class TestInsertIndividualColumn(unittest.TestCase):
             'hello',
             'hello',
         ]
-        dd_test = dataden.dataden(current_list)
+        dd_test = dataden_main.dataden(current_list)
         position_of_column_to_match_nulls = 0
         position_to_insert = 0
         num_rows = 10
@@ -480,7 +478,7 @@ class TestInsertIndividualColumn(unittest.TestCase):
         self.assertEqual(dd_test.data, output)
 
     def test_insert_individual_column_original_empty(self):
-        dd_test = dataden.dataden()
+        dd_test = dataden_main.dataden()
         position_of_column_to_match_nulls = 0
         position_to_insert = 0
         num_rows = 10
@@ -503,17 +501,17 @@ class TestInsertIndividualColumn(unittest.TestCase):
 class TestCreateHeaders(unittest.TestCase):
 
     def test_insert_headers_headers_not_list(self):
-        dd_test = dataden.dataden(data=[[1],[1],[1]])
-        with self.assertRaises(dataden.InputTypeError):
+        dd_test = dataden_main.dataden(data=[[1],[1],[1]])
+        with self.assertRaises(dataden_main.InputTypeError):
             dd_test.create_headers('fake_header')
 
     def test_insert_headers_bad_length(self):
-        dd_test = dataden.dataden(data=[[1,1,1]])
-        with self.assertRaises(dataden.InputLogicError):
+        dd_test = dataden_main.dataden(data=[[1,1,1]])
+        with self.assertRaises(dataden_main.InputLogicError):
             dd_test.create_headers(['test'])
 
     def test_insert_headers(self):
-        dd_test = dataden.dataden(data=[[1,1,1]])
+        dd_test = dataden_main.dataden(data=[[1,1,1]])
         header_cols = ['col 1', 'col 2', 'col 3']
         dd_test.create_headers(header_cols)
-        self.assertEquals(dd_test.headers, header_cols)
+        self.assertEqual(dd_test.headers, header_cols)
