@@ -1,8 +1,8 @@
 import csv
 from datetime import date
 from random import seed
-from src import related_date_functions
-from src import separate_column_functions
+from dataden import related_date_functions
+from dataden import separate_column_functions
 
 class InputLogicError(Exception):
     def __init__(self, message):

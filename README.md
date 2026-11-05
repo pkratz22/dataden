@@ -15,7 +15,7 @@ pip install -e .
 
 ```python
 from datetime import date
-from src.dataden_main import dataden
+from dataden import dataden
 
 d = dataden()
 d.create_related_date_output(

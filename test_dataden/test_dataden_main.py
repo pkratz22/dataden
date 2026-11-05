@@ -6,9 +6,9 @@ import unittest
 
 import pandas as pd
 
-from src import dataden_main
-from src import related_date_functions
-from src import separate_column_functions
+from dataden import dataden_main
+from dataden import related_date_functions
+from dataden import separate_column_functions
 
 
 class TestCreateRelatedDateOutput(unittest.TestCase):
